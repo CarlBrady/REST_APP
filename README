@@ -1,0 +1,9 @@
+export FLASK_APP=server.py
+flask run
+
+rabbitmq-server - command to run mqserver
+rabbitmqctl stop - command to stop mqserver
+
+
+ ___Call Client Function___
+ python xmlserver.py
