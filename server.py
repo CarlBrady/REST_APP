@@ -9,12 +9,23 @@ from schema import schema
 from graphene.test import Client
 import xmlrpc.client
 import urllib.request
-
+import hprose
+from ping_hp import hpping
+import socket
 
 
 app = Flask(__name__)
 
 @app.route('/')
+def homepage():
+    f = open('calls.log', 'a')
+    y = datetime.now()
+    y = y.strftime("%d/%m/%Y %H:%M:%S")
+    f.write(str(y) + '/ \n')
+    f.close()
+    return render_template('index.html')
+
+@app.route('/weather')
 def press_for_msg():
     f = open('calls.log', 'a')
     y = datetime.now()
@@ -24,7 +35,7 @@ def press_for_msg():
     return render_template('messages.html')
 
 
-@app.route('/', methods=['POST'])
+@app.route('/weather', methods=['POST'])
 def wait_for_msg():
     f = open('calls.log', 'a')
     y = datetime.now()
@@ -100,7 +111,7 @@ def ping_function():
     f = open('calls.log', 'a')
     y = datetime.now()
     y = y.strftime("%d/%m/%Y %H:%M:%S")
-    f.write(str(y) + '/ping \n')
+    f.write(str(y) + '/ping pong \n')
     f.close()
     return 'pong  ' + str(y)
 
@@ -206,3 +217,36 @@ def retrieve_student():
         return 'and our survey says!:' + (str(result_dob))
 
     return 'You didn\'t search for anything'
+
+@app.route('/pingpong')
+def ping():
+    f = open('calls.log', 'a')
+    y = datetime.now()
+    y = y.strftime("%d/%m/%Y %H:%M:%S")
+    f.write(str(y) + '/ping ip\n')
+    f.close()
+    client = hprose.HttpClient('http://127.0.0.1:8080/')
+    return client.ping()
+
+@app.route('/pingserver')
+def ping_server_start():
+    f = open('calls.log', 'a')
+    y = datetime.now()
+    y = y.strftime("%d/%m/%Y %H:%M:%S")
+    f.write(str(y) + '/ping_server \n')
+    f.close()
+    return render_template('hprose.html')
+
+@app.route('/pingserver', methods=['POST'])
+def ping_server():
+    f = open('calls.log', 'a')
+    y = datetime.now()
+    y = y.strftime("%d/%m/%Y %H:%M:%S")
+    f.write(str(y) + '/ping_server POST\n')
+    f.close()
+    server = hprose.HttpServer(port = 8181)
+    ip = socket.gethostbyname(socket.gethostname())
+    def ping():
+    	return ip
+    server.addFunction(ping)
+    server.start()

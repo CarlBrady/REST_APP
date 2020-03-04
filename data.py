@@ -13,7 +13,7 @@ def setup():
     )
     dob_By = Student(
         id="1998",
-        name="Doby",
+        name="Dobby",
         dob="10/01/1964",
     )
     tu_Pac = Student(
